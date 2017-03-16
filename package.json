@@ -6,6 +6,7 @@
     "@types/jest": "^19.2.2",
     "@types/node": "^7.0.8",
     "@types/react": "^15.0.16",
+    "@types/react-bootstrap": "0.0.46",
     "@types/react-dom": "^0.14.23",
     "moment": "^2.17.1",
     "react": "^15.4.2",

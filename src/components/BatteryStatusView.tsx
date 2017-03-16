@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import { Panel } from 'react-bootstrap';
 
 import { BatteryState } from '../BatteryState';
 
@@ -30,20 +31,62 @@ export class BatteryStatusView extends React.Component<BatteryStatusViewProps, u
     }
 
     render() {
+        const bState = this.props.batteryState;
+
+        const title = <h3>Battery Status</h3>;
+
+        const percentage = <h2>{`${bState.level * 100}%`}</h2>;
+
+        const source = (
+            <h4>{bState.charging ?
+                'Power Source: Adapter' : 'Power Source: Battery'}</h4>
+        );
+
+        var time;
+
+        if (bState.charging) {
+            time = (
+                <div>
+                    <span>Time until charged: </span>
+                    <strong>
+                        {BatteryStatusView.getHumanReadableDuration(
+                            bState.timeToCharge)
+                        }
+                    </strong>
+                </div>
+            );
+        } else {
+            time = (
+                <div>
+                    <span>Time until empty: </span>
+                    <strong>
+                        {BatteryStatusView.getHumanReadableDuration(
+                            bState.timeToDischarge)
+                        }
+                    </strong>
+                </div>
+            );
+        }
+
+        var style;
+
+        if (bState.charging || bState.level > 0.7) {
+            style = 'success';
+        } else if (bState.level > 0.4) {
+            style = 'warning';
+        } else {
+            style = 'danger';
+        }
+
         return (
-            <div>
-                <p>Charging? {this.props.batteryState.charging.toString()}</p>
-                <p>
-                    Time to Full? {BatteryStatusView.getHumanReadableDuration(
-                        this.props.batteryState.timeToCharge)}
-                </p>
-                <p>
-                    Time to Empty? {BatteryStatusView.getHumanReadableDuration(
-                        this.props.batteryState.timeToDischarge)}
-                </p>
-                <p>Level? {`${this.props.batteryState.level * 100}%`}</p>
-                <p>Last Update: {this.props.batteryState.time.format()}</p>
-            </div>
+            <Panel header={title} bsStyle={style} className="battery-status-panel">
+                <i className="battery">
+                    <div className="battery-fill" style={{ height: `${bState.level * 100}%` }} />
+                </i>
+                {percentage}
+                {source}
+                {time}
+            </Panel>
         );
     }
 };
