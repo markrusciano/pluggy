@@ -1,31 +1,32 @@
 import { BatteryManager } from './interfaces/BatteryInterfaces';
+import * as moment from 'moment';
 
 export class BatteryState {
     readonly charging: boolean;
-    readonly chargingTime: number;
-    readonly dischargingTime: number;
+    readonly timeToCharge: moment.Duration;
+    readonly timeToDischarge: moment.Duration;
     readonly level: number;
-    readonly time: number;
+    readonly time: moment.Moment;
 
-    static fromManager(manager: BatteryManager, time: number): BatteryState {
+    static fromManager(manager: BatteryManager, time: moment.Moment): BatteryState {
         return new BatteryState(
             manager.charging,
-            manager.chargingTime,
-            manager.dischargingTime,
+            moment.duration(manager.chargingTime, 'seconds'),
+            moment.duration(manager.dischargingTime, 'seconds'),
             manager.level,
             time);
     }
 
     constructor(
         charging: boolean,
-        chargingTime: number,
-        dischargingTime: number,
+        chargingTime: moment.Duration,
+        dischargingTime: moment.Duration,
         level: number,
-        time: number) {
+        time: moment.Moment) {
 
         this.charging = charging;
-        this.chargingTime = chargingTime;
-        this.dischargingTime = dischargingTime;
+        this.timeToCharge = chargingTime;
+        this.timeToDischarge = dischargingTime;
         this.level = level;
         this.time = time;
     }

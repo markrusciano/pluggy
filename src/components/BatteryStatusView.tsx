@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as moment from 'moment';
+
 import { BatteryState } from '../BatteryState';
 
 interface BatteryStatusViewProps {
@@ -7,16 +9,40 @@ interface BatteryStatusViewProps {
 
 export class BatteryStatusView extends React.Component<BatteryStatusViewProps, undefined> {
 
-    render() {
-        var dateString = new Date(this.props.batteryState.time).toLocaleString();
+    static getHumanReadableDuration(duration: moment.Duration): String {
+        if (!Number.isFinite(duration.milliseconds())) {
+            return 'N/A';
+        }
 
+        return `${duration.hours()}h ${duration.minutes()}m ${duration.seconds()}s`;
+
+        // if (duration.asHours() > 0) {
+        //     fmt += `${duration.asHours()}:`;
+        // }
+
+        // if (duration.asMinutes() > 0) {
+        //     fmt += `${duration.asMinutes()}:`;
+        // }
+
+        // if (duration.asSeconds() > 0) {
+        //     fmt += `${duration.asMinutes()}:`;
+        // }
+    }
+
+    render() {
         return (
             <div>
                 <p>Charging? {this.props.batteryState.charging.toString()}</p>
-                <p>Time to Full? {this.props.batteryState.chargingTime.toString()}</p>
-                <p>Time to Empty? {this.props.batteryState.dischargingTime.toString()}</p>
-                <p>Level? {this.props.batteryState.level.toString()}</p>
-                <p>Last Update: {dateString}</p>
+                <p>
+                    Time to Full? {BatteryStatusView.getHumanReadableDuration(
+                        this.props.batteryState.timeToCharge)}
+                </p>
+                <p>
+                    Time to Empty? {BatteryStatusView.getHumanReadableDuration(
+                        this.props.batteryState.timeToDischarge)}
+                </p>
+                <p>Level? {`${this.props.batteryState.level * 100}%`}</p>
+                <p>Last Update: {this.props.batteryState.time.format()}</p>
             </div>
         );
     }

@@ -1,4 +1,5 @@
 import { AsyncEvent } from 'ts-events';
+import * as moment from 'moment';
 
 import {
     BatteryManager,
@@ -36,12 +37,7 @@ export class BatteryDataProvider {
     }
 
     public getState(): BatteryState {
-        return new BatteryState(
-            this.batteryManager.charging,
-            this.batteryManager.chargingTime,
-            this.batteryManager.dischargingTime,
-            this.batteryManager.level,
-            Date.now());
+        return BatteryState.fromManager(this.batteryManager, moment());
     }
 
     private postStateChange(): void {
